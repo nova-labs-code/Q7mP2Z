@@ -1,97 +1,122 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CLASSIFIED</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #000;
-      color: #d1d5db;
-      font-family: "Courier New", monospace;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<title>system terminal</title>
 
-    .scanlines::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,0.03),
-        rgba(255,255,255,0.03) 1px,
-        transparent 2px,
-        transparent 4px
-      );
-      pointer-events: none;
-    }
+<style>
+body {
+  margin: 0;
+  background: #05080a;
+  color: #cfe3d6;
+  font-family: ui-monospace, monospace;
+}
 
-    .container {
-      text-align: center;
-      border: 1px solid rgba(255, 0, 0, 0.25);
-      padding: 30px 40px;
-      box-shadow: 0 0 40px rgba(255, 0, 0, 0.08);
-      background: rgba(10, 10, 10, 0.6);
-    }
+#screen {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
 
-    h1 {
-      color: #ef4444;
-      letter-spacing: 6px;
-      font-size: 2.2rem;
-      margin-bottom: 10px;
-    }
+.input-line {
+  display: flex;
+  padding: 10px 20px;
+}
 
-    .redacted {
-      display: inline-block;
-      background: #111;
-      color: #111;
-      padding: 2px 8px;
-      border-radius: 3px;
-      margin: 2px;
-    }
+.prompt {
+  color: #6ee7b7;
+  margin-right: 10px;
+}
 
-    p {
-      opacity: 0.8;
-      font-size: 1rem;
-      line-height: 1.6;
-    }
-
-    .stamp {
-      margin-top: 18px;
-      display: inline-block;
-      padding: 6px 12px;
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      color: #ef4444;
-      font-size: 0.8rem;
-      letter-spacing: 2px;
-    }
-  </style>
+input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #cfe3d6;
+  font: inherit;
+}
+</style>
 </head>
 
-<body class="scanlines">
-  <div class="container">
-    <h1>CLASSIFIED</h1>
+<body>
 
-    <p>
-      FILE STATUS: <span class="redacted">████████</span><br>
-      ACCESS LEVEL: <span class="redacted">██████</span><br>
-      PROJECT: <span class="redacted">████████████</span>
-    </p>
+<div id="screen"></div>
 
-    <p>
-      This page is intentionally left in a restricted state.<br>
-      All public access pathways are currently disabled.
-    </p>
+<div class="input-line">
+  <span class="prompt">user@node:~$</span>
+  <input id="cmd" autocomplete="off" />
+</div>
 
-    <div class="stamp">DO NOT DISTRIBUTE</div>
-  </div>
+<script>
+const screen = document.getElementById("screen");
+const input = document.getElementById("cmd");
+
+let username = null;
+let session = null;
+let loggedIn = false;
+
+function print(t) {
+  const div = document.createElement("div");
+  div.textContent = t;
+  screen.appendChild(div);
+}
+
+function send(cmd) {
+  print("user@node:~$ " + cmd);
+
+  // LOGIN
+  if (cmd.startsWith("login ")) {
+    const parts = cmd.split(" ");
+
+    if (parts.length < 3) {
+      print("[sys] format: login <username> <code>");
+      return;
+    }
+
+    username = parts[1];
+    session = parts[2];
+    loggedIn = true;
+
+    print("[sys] identity locked");
+    print("[sys] user: " + username);
+    return;
+  }
+
+  if (!loggedIn) {
+    print("[sys] authentication required");
+    return;
+  }
+
+  if (cmd.startsWith("kill ")) {
+    const target = cmd.split(" ")[1];
+
+    const payload = {
+      id: Date.now().toString(),
+      username: username,
+      session: session,
+      command: "kill",
+      target: target
+    };
+
+    console.log("PASTE INTO command.json:");
+    console.log(JSON.stringify(payload, null, 2));
+
+    print("[sys] kill signal staged");
+  }
+
+  if (cmd === "clear") {
+    screen.innerHTML = "";
+  }
+}
+
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    send(input.value.trim());
+    input.value = "";
+  }
+});
+</script>
+
 </body>
 </html>
