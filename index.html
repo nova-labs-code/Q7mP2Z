@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Under Wraps</title>
+  <title>CLASSIFIED</title>
   <style>
     body {
       margin: 0;
@@ -11,44 +11,87 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: Arial, Helvetica, sans-serif;
-      background: radial-gradient(circle at center, #111827, #030712);
-      color: #e5e7eb;
-      text-align: center;
+      background: #000;
+      color: #d1d5db;
+      font-family: "Courier New", monospace;
+      overflow: hidden;
+    }
+
+    .scanlines::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.03),
+        rgba(255,255,255,0.03) 1px,
+        transparent 2px,
+        transparent 4px
+      );
+      pointer-events: none;
     }
 
     .container {
-      padding: 24px;
+      text-align: center;
+      border: 1px solid rgba(255, 0, 0, 0.25);
+      padding: 30px 40px;
+      box-shadow: 0 0 40px rgba(255, 0, 0, 0.08);
+      background: rgba(10, 10, 10, 0.6);
     }
 
     h1 {
-      font-size: 2.4rem;
-      letter-spacing: 2px;
-      margin-bottom: 12px;
+      color: #ef4444;
+      letter-spacing: 6px;
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    .redacted {
+      display: inline-block;
+      background: #111;
+      color: #111;
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin: 2px;
     }
 
     p {
+      opacity: 0.8;
       font-size: 1rem;
-      opacity: 0.75;
+      line-height: 1.6;
     }
 
-    .seal {
+    .stamp {
       margin-top: 18px;
       display: inline-block;
-      padding: 8px 14px;
-      border: 1px solid rgba(255,255,255,0.25);
-      border-radius: 999px;
-      font-size: 0.85rem;
-      letter-spacing: 1px;
-      opacity: 0.8;
+      padding: 6px 12px;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
     }
   </style>
 </head>
-<body>
+
+<body class="scanlines">
   <div class="container">
-    <h1>TOP SECRET</h1>
-    <p>This project is currently under wraps.</p>
-    <div class="seal">Access restricted</div>
+    <h1>CLASSIFIED</h1>
+
+    <p>
+      FILE STATUS: <span class="redacted">████████</span><br>
+      ACCESS LEVEL: <span class="redacted">██████</span><br>
+      PROJECT: <span class="redacted">████████████</span>
+    </p>
+
+    <p>
+      This page is intentionally left in a restricted state.<br>
+      All public access pathways are currently disabled.
+    </p>
+
+    <div class="stamp">DO NOT DISTRIBUTE</div>
   </div>
 </body>
 </html>
