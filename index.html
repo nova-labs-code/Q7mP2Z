@@ -2,120 +2,49 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>system terminal</title>
+<title>Admin Panel</title>
 
 <style>
 body {
-  margin: 0;
-  background: #05080a;
-  color: #cfe3d6;
-  font-family: ui-monospace, monospace;
+  background:#0b0f12;
+  color:#cfe3d6;
+  font-family: monospace;
+  padding:40px;
 }
 
-#screen {
-  padding: 20px;
-  max-width: 900px;
-  margin: auto;
-}
-
-.input-line {
-  display: flex;
-  padding: 10px 20px;
-}
-
-.prompt {
-  color: #6ee7b7;
-  margin-right: 10px;
-}
-
-input {
-  flex: 1;
-  background: transparent;
-  border: none;
-  outline: none;
-  color: #cfe3d6;
-  font: inherit;
+button {
+  display:block;
+  margin:10px 0;
+  padding:10px;
+  background:#1a1f26;
+  color:white;
+  border:1px solid #333;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div id="screen"></div>
+<h2>Admin Control Panel</h2>
 
-<div class="input-line">
-  <span class="prompt">user@node:~$</span>
-  <input id="cmd" autocomplete="off" />
-</div>
+<button onclick="send('StartRound')">Start Round</button>
+<button onclick="send('EndRound')">End Round</button>
+<button onclick="send('KillAll')">Kill All</button>
+<button onclick="send('LightsOut')">Lights Out</button>
 
 <script>
-const screen = document.getElementById("screen");
-const input = document.getElementById("cmd");
-
-let username = null;
-let session = null;
-let loggedIn = false;
-
-function print(t) {
-  const div = document.createElement("div");
-  div.textContent = t;
-  screen.appendChild(div);
-}
-
 function send(cmd) {
-  print("user@node:~$ " + cmd);
+  const payload = {
+    id: Date.now().toString(),
+    command: cmd
+  };
 
-  // LOGIN
-  if (cmd.startsWith("login ")) {
-    const parts = cmd.split(" ");
+  console.log("COPY INTO run.json:");
+  console.log(JSON.stringify(payload, null, 2));
 
-    if (parts.length < 3) {
-      print("[sys] format: login <username> <code>");
-      return;
-    }
-
-    username = parts[1];
-    session = parts[2];
-    loggedIn = true;
-
-    print("[sys] identity locked");
-    print("[sys] user: " + username);
-    return;
-  }
-
-  if (!loggedIn) {
-    print("[sys] authentication required");
-    return;
-  }
-
-  if (cmd.startsWith("kill ")) {
-    const target = cmd.split(" ")[1];
-
-    const payload = {
-      id: Date.now().toString(),
-      username: username,
-      session: session,
-      command: "kill",
-      target: target
-    };
-
-    console.log("PASTE INTO command.json:");
-    console.log(JSON.stringify(payload, null, 2));
-
-    print("[sys] kill signal staged");
-  }
-
-  if (cmd === "clear") {
-    screen.innerHTML = "";
-  }
+  alert("Command generated: " + cmd);
 }
-
-input.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    send(input.value.trim());
-    input.value = "";
-  }
-});
 </script>
 
 </body>
